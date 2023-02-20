@@ -1,0 +1,65 @@
+# kubectl apply -f deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sunstealer-explorer-react
+  namespace: default
+  labels:
+    app: sunstealer-explorer-react
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sunstealer-explorer-react
+  template:
+    metadata:
+      labels:
+        app: sunstealer-explorer-react
+    spec:
+      imagePullSecrets:
+        - name: docker
+      containers:
+        - name: sunstealer-explorer-react
+          image: ajmfco37-01.ajm.net:5000/sunstealer-explorer-react:latest
+          env:
+          ports:
+            - containerPort: 8080
+              name: w3
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: sunstealer-explorer-react
+  namespace: default
+spec:
+  selector:
+    app: sunstealer-explorer-react
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: sunstealer-explorer-react
+  namespace: default
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: 
+      - "*.ajm.net"
+      secretName: sunstealer
+  rules:
+    - host: "*.ajm.net"
+      http:
+        paths:
+          - path: /sunstealer-explorer-react(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: sunstealer-explorer-react
+                port:
+                  number: 8080
