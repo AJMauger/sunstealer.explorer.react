@@ -12,10 +12,8 @@ export const Home = (props: Props) => {
   }
 
   return (
-    <pre style={{ height: "calc(100vh - 36px)", overflowY: "auto" }}>
-      { _identity.discovery ? JSON.stringify(_identity.discovery, null, 2) : ""}
-    </pre>
-    );
+    <pre style={{ fontSize: 12, height: "calc(100vh - 36px)", overflowY: "auto" }}>{ _identity.discovery ? JSON.stringify(_identity.discovery, null, 2) : ""}</pre>
+  );
 }
 
 export default Home;
